@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of the symfony package.
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
@@ -85,7 +84,7 @@ class sfMySQLDatabase extends sfDatabase
 
     // let's see if we need a persistent connection
     $persistent = $this->getParameter('persistent', false);
-    $connect    = ($persistent) ? 'mysql_pconnect' : 'mysql_connect';
+    $connect    = 'mysqli_connect';
 
     if ($password == null)
     {
@@ -113,7 +112,7 @@ class sfMySQLDatabase extends sfDatabase
     }
 
     // select our database
-    if ($database != null && !@mysql_select_db($database, $this->connection))
+    if ($database != null && !@mysqli_select_db($this->connection, $database))
     {
       // can't select the database
       $error = 'Failed to select MySQLDatabase "%s"';

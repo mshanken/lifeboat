@@ -36,7 +36,7 @@ class MySQLTableInfo extends TableInfo {
         include_once 'creole/metadata/ColumnInfo.php';
         include_once 'creole/drivers/mysql/MySQLTypes.php';
 
-        if (!@mysql_select_db($this->dbname, $this->conn->getResource())) {
+        if (!@mysqli_select_db($this->conn->getResource(), $this->dbname)) {
             throw new SQLException('No database selected');
         }
 
@@ -59,7 +59,7 @@ class MySQLTableInfo extends TableInfo {
             $size = null;
             $precision = null;
 			$scale = null;
-			
+
             if (preg_match('/^(\w+)[\(]?([\d,]*)[\)]?( |$)/', $row['Type'], $matches)) {
                 //            colname[1]   size/precision[2]
                 $nativeType = $matches[1];
@@ -103,7 +103,7 @@ class MySQLTableInfo extends TableInfo {
         // columns have to be loaded first
         if (!$this->colsLoaded) $this->initColumns();
 
-        if (!@mysql_select_db($this->dbname, $this->conn->getResource())) {
+        if (!@mysqli_select_db($this->conn->getResource(), $this->dbname)) {
             throw new SQLException('No database selected');
         }
 
@@ -136,7 +136,7 @@ class MySQLTableInfo extends TableInfo {
         // columns have to be loaded first
         if (!$this->colsLoaded) $this->initColumns();
 
-        if (!@mysql_select_db($this->dbname, $this->conn->getResource())) {
+        if (!@mysqli_select_db($this->conn->getResource(), $this->dbname)) {
             throw new SQLException('No database selected');
         }
 
@@ -185,7 +185,7 @@ class MySQLTableInfo extends TableInfo {
 
     // columns have to be loaded first
     if (!$this->colsLoaded) $this->initColumns();
-    if (!@mysql_select_db($this->dbname, $this->conn->getResource())) {
+    if (!@mysqli_select_db($this->conn->getResource(), $this->dbname)) {
       throw new SQLException('No database selected');
     }
        // Get the CREATE TABLE syntax
@@ -221,7 +221,7 @@ class MySQLTableInfo extends TableInfo {
             'ON DELETE'	=> ForeignKeyInfo::RESTRICT,
             'ON UPDATE'	=> ForeignKeyInfo::RESTRICT,
           );
-                              
+
           if ($fkey) {
             //split foreign key information -> search for ON DELETE and afterwords for ON UPDATE action
             foreach (array_keys($fkactions) as $fkaction) {
@@ -238,7 +238,7 @@ class MySQLTableInfo extends TableInfo {
       }
     }
     $this->fksLoaded = true;
-    
+
   }
 
   protected function initVendorSpecificInfo()
