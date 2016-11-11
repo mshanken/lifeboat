@@ -54,16 +54,16 @@ class MySQLResultSet extends ResultSetCommon implements ResultSet {
      */ 
     public function next()
     {
-        $this->fields = mysql_fetch_array($this->result, $this->fetchmode);        
+        $this->fields = mysqli_fetch_array($this->result, $this->fetchmode);        
 
            if (!$this->fields) {
-            $errno = mysql_errno($this->conn->getResource());
+            $errno = mysqli_errno($this->conn->getResource());
             if (!$errno) {
                 // We've advanced beyond end of recordset.
                 $this->afterLast();
                 return false;
             } else {
-                throw new SQLException("Error fetching result", mysql_error($this->conn->getResource()));
+                throw new SQLException("Error fetching result", mysqli_error($this->conn->getResource()));
             }
         }
         
@@ -81,9 +81,9 @@ class MySQLResultSet extends ResultSetCommon implements ResultSet {
      */
     function getRecordCount()
     {
-        $rows = @mysql_num_rows($this->result);
+        $rows = @mysqli_num_rows($this->result);
         if ($rows === null) {
-            throw new SQLException("Error fetching num rows", mysql_error($this->conn->getResource()));
+            throw new SQLException("Error fetching num rows", mysqli_error($this->conn->getResource()));
         }
         return (int) $rows;
     }
@@ -94,7 +94,7 @@ class MySQLResultSet extends ResultSetCommon implements ResultSet {
     function close()
     {        
         if(is_resource($this->result))
-            @mysql_free_result($this->result);
+            @mysqli_free_result($this->result);
         $this->fields = array();
     }    
         

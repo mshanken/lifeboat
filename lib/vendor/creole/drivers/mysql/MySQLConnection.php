@@ -49,7 +49,7 @@ class MySQLConnection extends ConnectionCommon implements Connection {
      */
     function connect($dsninfo, $flags = 0)
     {
-        if (!extension_loaded('mysql')) {
+        if (!extension_loaded('mysqli')) {
             throw new SQLException('mysql extension not loaded');
         }
 
@@ -85,7 +85,7 @@ class MySQLConnection extends ConnectionCommon implements Connection {
         }
         @ini_restore('track_errors');
         if (empty($conn)) {
-            if (($err = @mysql_error()) != '') {
+            if (($err = @mysqli_error()) != '') {
                 throw new SQLException("connect failed", $err);
             } elseif (empty($php_errormsg)) {
                 throw new SQLException("connect failed");
@@ -96,15 +96,15 @@ class MySQLConnection extends ConnectionCommon implements Connection {
 
         if ($dsninfo['database']) {
             if (!@mysqli_select_db($conn, $dsninfo['database'])) {
-               switch(mysql_errno($conn)) {
+               switch(mysqli_errno($conn)) {
                         case 1049:
-                            $exc = new SQLException("no such database", mysql_error($conn));
+                            $exc = new SQLException("no such database", mysqli_error($conn));
                         break;
                         case 1044:
-                            $exc = new SQLException("access violation", mysql_error($conn));
+                            $exc = new SQLException("access violation", mysqli_error($conn));
                         break;
                         default:
-                           $exc = new SQLException("cannot select database", mysql_error($conn));
+                           $exc = new SQLException("cannot select database", mysqli_error($conn));
                 }
 
                 throw $exc;
@@ -169,7 +169,7 @@ class MySQLConnection extends ConnectionCommon implements Connection {
      */
     function close()
     {
-        $ret = mysql_close($this->dblink);
+        $ret = mysqli_close($this->dblink);
         $this->dblink = null;
         return $ret;
     }
@@ -194,12 +194,12 @@ class MySQLConnection extends ConnectionCommon implements Connection {
         $this->lastQuery = $sql;
         if ($this->database) {
             if (!@mysqli_select_db($this->dblink, $this->database)) {
-                throw new SQLException('No database selected', mysql_error($this->dblink));
+                throw new SQLException('No database selected', mysqli_error($this->dblink));
             }
         }
-        $result = @mysql_query($sql, $this->dblink);
+        $result = @mysqli_query($this->dblink, $sql);
         if (!$result) {
-            throw new SQLException('Could not execute query', mysql_error($this->dblink), $sql);
+            throw new SQLException('Could not execute query', mysqli_error($this->dblink), $sql);
         }
         return new MySQLResultSet($this, $result, $fetchmode);
     }
@@ -213,15 +213,15 @@ class MySQLConnection extends ConnectionCommon implements Connection {
 
         if ($this->database) {
             if (!@mysqli_select_db($this->dblink, $this->database)) {
-                    throw new SQLException('No database selected', mysql_error($this->dblink));
+                    throw new SQLException('No database selected', mysqli_error($this->dblink));
             }
         }
 
-        $result = @mysql_query($sql, $this->dblink);
+        $result = @mysqli_query($this->dblink, $sql);
         if (!$result) {
-            throw new SQLException('Could not execute update', mysql_error($this->dblink), $sql);
+            throw new SQLException('Could not execute update', mysqli_error($this->dblink), $sql);
         }
-        return (int) mysql_affected_rows($this->dblink);
+        return (int) mysqli_affected_rows($this->dblink);
     }
 
     /**
@@ -231,10 +231,10 @@ class MySQLConnection extends ConnectionCommon implements Connection {
      */
     protected function beginTrans()
     {
-        $result = @mysql_query('SET AUTOCOMMIT=0', $this->dblink);
-        $result = @mysql_query('BEGIN', $this->dblink);
+        $result = @mysqli_query('SET AUTOCOMMIT=0', $this->dblink);
+        $result = @mysqli_query('BEGIN', $this->dblink);
         if (!$result) {
-            throw new SQLException('Could not begin transaction', mysql_error($this->dblink));
+            throw new SQLException('Could not begin transaction', mysqli_error($this->dblink));
         }
     }
 
@@ -247,13 +247,13 @@ class MySQLConnection extends ConnectionCommon implements Connection {
     {
         if ($this->database) {
             if (!@mysqli_select_db($this->dblink, $this->database)) {
-                 throw new SQLException('No database selected', mysql_error($this->dblink));
+                 throw new SQLException('No database selected', mysqli_error($this->dblink));
             }
         }
-        $result = @mysql_query('COMMIT', $this->dblink);
-        $result = @mysql_query('SET AUTOCOMMIT=1', $this->dblink);
+        $result = @mysqli_query('COMMIT', $this->dblink);
+        $result = @mysqli_query('SET AUTOCOMMIT=1', $this->dblink);
         if (!$result) {
-            throw new SQLException('Can not commit transaction', mysql_error($this->dblink));
+            throw new SQLException('Can not commit transaction', mysqli_error($this->dblink));
         }
     }
 
@@ -266,13 +266,13 @@ class MySQLConnection extends ConnectionCommon implements Connection {
     {
         if ($this->database) {
             if (!@mysqli_select_db($this->dblink, $this->database)) {
-                throw new SQLException('No database selected', mysql_error($this->dblink));
+                throw new SQLException('No database selected', mysqli_error($this->dblink));
             }
         }
-        $result = @mysql_query('ROLLBACK', $this->dblink);
-        $result = @mysql_query('SET AUTOCOMMIT=1', $this->dblink);
+        $result = @mysqli_query('ROLLBACK', $this->dblink);
+        $result = @mysqli_query('SET AUTOCOMMIT=1', $this->dblink);
         if (!$result) {
-            throw new SQLException('Could not rollback transaction', mysql_error($this->dblink));
+            throw new SQLException('Could not rollback transaction', mysqli_error($this->dblink));
         }
     }
 
@@ -284,7 +284,7 @@ class MySQLConnection extends ConnectionCommon implements Connection {
      */
     function getUpdateCount()
     {
-        return (int) @mysql_affected_rows($this->dblink);
+        return (int) @mysqli_affected_rows($this->dblink);
     }
 
 }
