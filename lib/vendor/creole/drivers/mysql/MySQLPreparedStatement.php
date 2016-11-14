@@ -38,7 +38,7 @@ class MySQLPreparedStatement extends PreparedStatementCommon implements Prepared
      */
     protected function escape($str)
     {
-        return mysql_real_escape_string($str, $this->conn->getResource());
+        return mysqli_real_escape_string($this->conn->getResource(), $str);
     }    
     
 }
