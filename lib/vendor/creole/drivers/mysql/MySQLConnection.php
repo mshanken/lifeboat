@@ -231,8 +231,8 @@ class MySQLConnection extends ConnectionCommon implements Connection {
      */
     protected function beginTrans()
     {
-        $result = @mysqli_query('SET AUTOCOMMIT=0', $this->dblink);
-        $result = @mysqli_query('BEGIN', $this->dblink);
+        $result = @mysqli_query($this->dblink, 'SET AUTOCOMMIT=0');
+        $result = @mysqli_query($this->dblink, 'BEGIN');
         if (!$result) {
             throw new SQLException('Could not begin transaction', mysqli_error($this->dblink));
         }
@@ -250,8 +250,8 @@ class MySQLConnection extends ConnectionCommon implements Connection {
                  throw new SQLException('No database selected', mysqli_error($this->dblink));
             }
         }
-        $result = @mysqli_query('COMMIT', $this->dblink);
-        $result = @mysqli_query('SET AUTOCOMMIT=1', $this->dblink);
+        $result = @mysqli_query($this->dblink, 'COMMIT');
+        $result = @mysqli_query($this->dblink, 'SET AUTOCOMMIT=1');
         if (!$result) {
             throw new SQLException('Can not commit transaction', mysqli_error($this->dblink));
         }
@@ -269,8 +269,8 @@ class MySQLConnection extends ConnectionCommon implements Connection {
                 throw new SQLException('No database selected', mysqli_error($this->dblink));
             }
         }
-        $result = @mysqli_query('ROLLBACK', $this->dblink);
-        $result = @mysqli_query('SET AUTOCOMMIT=1', $this->dblink);
+        $result = @mysqli_query($this->dblink, 'ROLLBACK');
+        $result = @mysqli_query($this->dblink, 'SET AUTOCOMMIT=1');
         if (!$result) {
             throw new SQLException('Could not rollback transaction', mysqli_error($this->dblink));
         }
