@@ -17,13 +17,13 @@ sfConfig::add(array(
   'sf_upload_dir_name'  => $sf_upload_dir_name  = 'uploads',
   'sf_data_dir_name'    => $sf_data_dir_name    = 'data',
   'sf_config_dir_name'  => $sf_config_dir_name  = 'config',
-  'sf_apps_dir_name'    => $sf_apps_dir_name    = 'apps',
+  'sf_apps_dir_name'    => $sf_apps_dir_name    = 'src',
   'sf_test_dir_name'    => $sf_test_dir_name    = 'test',
   'sf_doc_dir_name'     => $sf_doc_dir_name     = 'doc',
   'sf_plugins_dir_name' => $sf_plugins_dir_name = 'plugins',
 
   // global directory structure
-  'sf_app_dir'        => $sf_app_dir = $sf_root_dir.DIRECTORY_SEPARATOR.$sf_apps_dir_name.DIRECTORY_SEPARATOR.$sf_app,
+  'sf_app_dir'        => $sf_app_dir = $sf_root_dir.DIRECTORY_SEPARATOR.$sf_apps_dir_name,
   'sf_lib_dir'        => $sf_lib_dir = $sf_root_dir.DIRECTORY_SEPARATOR.$sf_lib_dir_name,
   'sf_bin_dir'        => $sf_root_dir.DIRECTORY_SEPARATOR.$sf_bin_dir_name,
   'sf_web_dir'        => $sf_root_dir.DIRECTORY_SEPARATOR.$sf_web_dir_name,
